@@ -75,10 +75,10 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public void removeRole(Role role) {
-        roles.remove(role);
-        role.getUser().remove(this);
-    }
+//    public void removeRole(Role role) {
+//        roles.remove(role);
+//        role.getUser().remove(this);
+//    }
 
     public Long getId() {
         return id;

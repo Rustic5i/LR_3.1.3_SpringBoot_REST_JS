@@ -19,12 +19,12 @@ public class Role implements GrantedAuthority {
     private String authority;
 
 
-    @ManyToMany(mappedBy = "roles") //Если ассоциация двунаправленная, одна сторона должна
-    // быть владельцем, а другая - обратным концом (т. Е. Она будет
-    // проигнорирована при обновлении значений взаимосвязи в таблице ассоциаций):
-    // Итак, сторона, имеющая mappedByатрибут, является обратной стороной. Сторона,
-    // у которой нет mappedByатрибута, является владельцем.
-    private Set<User> user = new HashSet<>();
+//    @ManyToMany(mappedBy = "roles") //Если ассоциация двунаправленная, одна сторона должна
+//    // быть владельцем, а другая - обратным концом (т. Е. Она будет
+//    // проигнорирована при обновлении значений взаимосвязи в таблице ассоциаций):
+//    // Итак, сторона, имеющая mappedByатрибут, является обратной стороной. Сторона,
+//    // у которой нет mappedByатрибута, является владельцем.
+//    private Set<User> user = new HashSet<>();
 
     public Role() {
     }
@@ -37,10 +37,10 @@ public class Role implements GrantedAuthority {
     public Long getId() {
         return id;
     }
-
-    public Set<User> getUser() {
-        return user;
-    }
+//
+//    public Set<User> getUser() {
+//        return user;
+//    }
 
     public void setAuthority(String authority) {
         this.authority = authority;
