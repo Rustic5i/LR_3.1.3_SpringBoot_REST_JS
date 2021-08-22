@@ -25,7 +25,7 @@ public class HibernateDAO implements DAO {
         try {
             entityManager.persist(user);
         } catch (PersistenceException e) {
-            throw new SaveObjectException(e.getMessage());
+            throw new SaveObjectException("Юзер с таким email`ом уже существует");
         }
     }
 
