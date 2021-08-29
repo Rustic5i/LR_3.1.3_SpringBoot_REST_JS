@@ -1,6 +1,7 @@
 package com.baratov.spring.springboot.controller;
 
 
+import com.baratov.spring.springboot.model.DTO.UserDTO;
 import com.baratov.spring.springboot.model.User;
 import com.baratov.spring.springboot.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class RESTControllerUser {
     }
 
     @GetMapping("/user")
-    public User getUser(Principal principal){
+    public UserDTO getUser(Principal principal){
         return service.findByUserEmail(principal.getName());
     }
 }

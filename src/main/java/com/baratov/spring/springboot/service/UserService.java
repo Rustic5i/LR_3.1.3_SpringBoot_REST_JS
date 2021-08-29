@@ -1,6 +1,8 @@
 package com.baratov.spring.springboot.service;
 
 import com.baratov.spring.springboot.dao.DAO;
+import com.baratov.spring.springboot.model.DTO.UserConverterDTO;
+import com.baratov.spring.springboot.model.DTO.UserDTO;
 import com.baratov.spring.springboot.model.Role;
 import com.baratov.spring.springboot.model.User;
 import com.baratov.spring.springboot.myExcetion.SaveObjectException;
@@ -19,20 +21,21 @@ import java.util.Set;
 public class UserService implements IUserService {
 
     private DAO dao;
-
     private PasswordEncoder encoder;
+    private UserConverterDTO userConverterDTO;
 
     @Autowired
-    public UserService(DAO dao, PasswordEncoder encoder) {
+    public UserService(DAO dao, PasswordEncoder encoder, UserConverterDTO userConverterDTO) {
         this.dao = dao;
         this.encoder = encoder;
+        this.userConverterDTO = userConverterDTO;
     }
 
     @Override
     @Transactional
-    public User findByUserEmail(String userEmail) {
-        User user = dao.findByUserEmail(userEmail);
-        Hibernate.initialize(user.getAuthorities());
+    public UserDTO findByUserEmail(String userEmail) {
+        UserDTO user = userConverterDTO.convertUserToUserDTO(dao.findByUserEmail(userEmail)) ;
+//        Hibernate.initialize(user.getAuthorities());
         return user;
     }
 
@@ -41,25 +44,20 @@ public class UserService implements IUserService {
     // пожалуйста, откатите транзакцию (не сохраняйте запись в БД) Аминь !
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void registrationUser(User newUser) throws SaveObjectException {
-        User user = new User();
-        user.setLastName(newUser.getLastName());
-        user.setFirstName(newUser.getFirstName());
-        user.setAge(newUser.getAge());
-        user.setEmail(newUser.getEmail());
-        user.setRoles(newUser.getRoles());
-        user.setPassword(encoder.encode(newUser.getPassword()));
-        dao.saveUser(user);
+    public void registrationUser(UserDTO newUserDto) throws SaveObjectException {
+        User newUser = userConverterDTO.converUserDtoToUser(newUserDto);
+        newUser.setPassword(encoder.encode(newUserDto.getPassword()));
+        dao.saveUser(newUser);
     }
 
     @Override
     @Transactional
-    public List<User> getAllUsers() {
-        List<User> users = dao.getAllUsers();
+    public List<UserDTO> getAllUsers() {
+        List<UserDTO> users = userConverterDTO.convertAllToDTO(dao.getAllUsers());
         if (users.size() == 0) {
             return null;
         }
-        Hibernate.initialize(users.get(0).getAuthorities());
+//        Hibernate.initialize(users.get(0).getAuthorities());
         return users;
     }
 
@@ -76,13 +74,15 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return dao.getUserById(id);
+    public UserDTO getUserById(Long id) {
+        UserDTO userDTO = userConverterDTO.convertUserToUserDTO(dao.getUserById(id));
+        return userDTO;
     }
 
     @Override
     @Transactional(rollbackFor = {Exception.class})
-    public void updateUser(User updateUser) throws SaveObjectException {
+    public void updateUser(UserDTO updateUserDTO) throws SaveObjectException {
+        User updateUser = userConverterDTO.converUserDtoToUser(updateUserDTO);
         updateUser.setPassword(encoder.encode(updateUser.getPassword()));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

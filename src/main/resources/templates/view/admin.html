@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <!-- Обязательные метатеги -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>List People</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+</head>
+<body>
+<!--------------Панель навигации------------------------------------------------->
+<div class="h-100 w-100">
+    <header>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div>
+                    <span id="navbarEmail" class="navbar-brand mb-0 h1">userName</span>
+                    <span class="navbar-brand">with roles:</span>
+                    <span id="navbarRole" class="navbar-brand">userRole</span>
+                </div>
+                <div>
+                    <a class="nav-link" style="color: #9a9787" href="/logout">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!---------------Навигация и вкладки------------------------------------------------>
+    <!--Main panel-->
+    <div class="d-flex h-100 d-inline-block">
+        <!--Menu Admin and  User-->
+        <ul class="nav nav-pills flex-column mb-auto col-2">
+            <li class="nav-item">
+                <a class="nav-link active" id="admin-panel" data-bs-toggle="pill" href="#pills-admin-panel">Admin</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="user-panel" data-bs-toggle="pill" href="#pills-user-profile">User</a>
+            </li>
+        </ul>
+        <div class="tab-content col-sm-9 p-3" id="pills-admin-user">
+            <!--        Admin panel-->
+            <div class="tab-pane fade show active bg-light" id="pills-admin-panel">
+                <div><h1>Admin panel</h1></div>
+                <!--            Навигация Users table и New User-->
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab">
+                        <a class="nav-link active" id="nav-user-tab" data-bs-toggle="pill" href="#nav-table">Users
+                            table</a>
+                        <a class="nav-link" id="nav-newUser-tab" data-bs-toggle="pill" href="#nav-newUser">New User</a>
+                    </div>
+                </nav>
+                <div class="tab-content border border-1" id="nav-tabContent">
+                    <!--                Table Users-->
+                    <div class="tab-pane fade show active" id="nav-table">
+                        <div class="p-3 bg-light gray border">
+                            <h3>All users</h3>
+                        </div>
+                        <div class="bg-white">
+                            <br>
+                            <table border="1" class="table table-hover">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Age</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                <tbody id="adminTable"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!--                New User-->
+                    <div class="tab-pane fade" id="nav-newUser">
+                        <div>
+                            <div class="p-3"><h4>New User</h4></div>
+                        </div>
+                        <div class="bg-white w-100 p-3">
+                            <div class="col-md-5 mx-auto">
+                                <form>
+                                    <div class="text-center">
+                                        <div class="mb-3">
+                                            <label for="InputFirstName" class="form-label"><b>First name</b></label>
+                                            <input name="firstName" type="text" class="form-control"
+                                                   id="InputFirstName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="InputLastName" class="form-label"><b>Last name</b></label>
+                                            <input name="lastName" type="text" class="form-control"
+                                                   id="InputLastName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="InputAge" class="form-label"><b>Age</b></label>
+                                            <input name="age" type="number" class="form-control" id="InputAge"
+                                                   required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label"><b>Email</b></label>
+                                            <input name="email" type="email" class="form-control"
+                                                   id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                                            <div id="emailHelp" class="form-text">We'll never share your email with
+                                                anyone else.
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputPassword1"
+                                                   class="form-label"><b>Password</b></label>
+                                            <input name="password" type="password" class="form-control"
+                                                   id="exampleInputPassword1" required>
+                                        </div>
+                                        <div>
+                                            <div><b>Role</b></div>
+                                            <select id="listRole" name="roles[]" class="form-select" multiple
+                                                    aria-label="multiple select example" required>
+                                                <option value="ROLE_ADMIN">ADMIN</option>
+                                                <option value="ROLE_USER">USER</option>
+                                            </select>
+                                        </div>
+                                        <div class="p-3 col-md-5 mx-auto">
+                                            <button type="submit" onclick="addUser()" class="btn text-white bg-success">
+                                                Add new user
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--        User information-->
+            <div class="tab-pane fade bg-light" id="pills-user-profile">
+                <br>
+                <div>
+                    <div><h3>User information-page</h3></div>
+                    <div>
+                        <div class="p-3 bg-light gray border"><h5>About user</h5></div>
+                        <table border="1" class="table table-hover">
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Age</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                            </tr>
+                            <tr>
+                                <tbody id="userid"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!---------------------------------------------- ------------------------------------>
+<!---   Modal windows Edit-->
+<div id="editModal" class="modal">
+    <div  tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="EditLabel">Edit user</h5>
+                    <button onclick="closeModalEdit()" type="button" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--                                                    Form edit user-->
+                    <div>
+                        <form>
+                            <div class="text-center">
+                                <div>
+                                    <label for="id0"><b>ID</b></label>
+                                    <input th:name="id" th:type="text"
+                                           class="form-control" id="id0"
+                                           disabled/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="UpdateFirstName" class="form-label"><b>First
+                                        name</b></label>
+                                    <input th:name="firstName" type="text"
+                                           class="form-control" id="UpdateFirstName"
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="UpdateLastName"
+                                           class="form-label"><b>Last
+                                        name</b></label>
+                                    <input th:name="lastName" type="text"
+                                           class="form-control" id="UpdateLastName"
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="UpdateAge"
+                                           class="form-label"><b>Age</b></label>
+                                    <input th:name="age" type="number"
+                                           class="form-control" id="UpdateAge"
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="UpdateEmail" class="form-label"><b>Email</b></label>
+                                    <input th:name="email" type="email"
+                                           class="form-control" id="UpdateEmail"
+                                           aria-describedby="emailHelp1" required>
+                                    <div id="emailHelp1" class="form-text">We'll
+                                        never share your email with anyone else.
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="UpdatePassword"
+                                           class="form-label"><b>Password</b></label>
+                                    <input th:name="password"
+                                           type="password" class="form-control"
+                                           id="UpdatePassword" required>
+                                </div>
+                                <div>
+                                    <div><b>Role</b></div>
+                                    <select id="UpdateListRoles" class="form-select" name="listRoles[]"
+                                            multiple
+                                            aria-label="multiple select example"
+                                            required>
+                                        <option value="ROLE_ADMIN">ADMIN</option>
+                                        <option value="ROLE_USER">USER</option>
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <div>
+                                        <button onclick="closeModalEdit()" type="button"
+                                                class="btn btn-secondary">Close
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button onclick="updateUser()" type="submit" class="btn btn-primary">Edit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--   Modal windows delete-->
+<div id="myModal" class="modal">
+    <div id="deletModal" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" onclick="closeModalDelete()" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="text-center">
+                            <div>
+                                <label for="DeleteId"><b>ID</b></label>
+                                <input th:name="id" th:type="text"
+                                       class="form-control" id="DeleteId" disabled/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="DeleteFirstName" class="form-label"><b>First
+                                    name</b></label>
+                                <input th:name="firstName" type="text"
+                                       class="form-control" id="DeleteFirstName"
+                                       disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="DeleteLastName"
+                                       class="form-label"><b>Last
+                                    name</b></label>
+                                <input th:name="lastName" type="text"
+                                       class="form-control" id="DeleteLastName"
+                                       disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="DeleteAge"
+                                       class="form-label"><b>Age</b></label>
+                                <input th:name="age" type="number"
+                                       class="form-control" id="DeleteAge"
+                                       disabled>
+                            </div>
+                            <div class="mb-3">
+                                <label for="DeleteEmail" class="form-label"><b>Email</b></label>
+                                <input th:name="email" type="email"
+                                       class="form-control" id="DeleteEmail"
+                                       aria-describedby="emailHelp2" disabled>
+                            </div>
+                            <div>
+                                <div><b>Role</b></div>
+                                <select class="form-select" name="listRoles[]"
+                                        multiple
+                                        aria-label="multiple select example"
+                                        disabled>
+                                    <option value="ROLE_ADMIN">ADMIN</option>
+                                    <option value="ROLE_USER">USER</option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <div>
+                                    <button onclick="closeModalDelete()" type="button"
+                                            class="btn btn-secondary">Close
+                                    </button>
+                                </div>
+                                <div>
+                                    <button onclick="deletUserById($('#DeleteId').val())" type="submit"
+                                            class="btn bg-danger text-white">Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!------------------------------------------------------------------------->
+<script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+<script src="admin.js"></script>
+<script src="user.js"></script>
+</body>
+</html>

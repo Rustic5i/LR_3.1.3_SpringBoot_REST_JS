@@ -1,5 +1,6 @@
 package com.baratov.spring.springboot.service;
 
+import com.baratov.spring.springboot.dao.DAO;
 import com.baratov.spring.springboot.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,17 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserDetails implements UserDetailsService {
 
-    private IUserService userService;
+    private DAO dao;
 
     @Autowired
-    public UserDetails(IUserService userService) {
-        this.userService = userService;
+    public UserDetails(DAO dao) {
+        this.dao = dao;
     }
 
     @Override
     @Transactional
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUserEmail(username);
+        User user = dao.findByUserEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User '%s' not found ", username));
         }

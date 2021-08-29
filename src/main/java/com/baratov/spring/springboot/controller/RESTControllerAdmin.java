@@ -1,13 +1,12 @@
 package com.baratov.spring.springboot.controller;
 
-import com.baratov.spring.springboot.model.User;
+import com.baratov.spring.springboot.model.DTO.UserDTO;
 import com.baratov.spring.springboot.myExcetion.NoSuchUserException;
 import com.baratov.spring.springboot.myExcetion.SaveObjectException;
-import com.baratov.spring.springboot.myExcetion.UserInCorrectData;
 import com.baratov.spring.springboot.service.IUserService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,26 +23,27 @@ public class RESTControllerAdmin {
     }
 
     @GetMapping("/admin")
-    public List<User> allUsers(){
-        return  service.getAllUsers();
+    public ResponseEntity<List<UserDTO>> allUsers(){
+        List<UserDTO> users = service.getAllUsers();
+        return  new ResponseEntity<>(users,HttpStatus.OK);
     }
 
     @GetMapping("/admin/{id}")
-    public User getUser(@PathVariable Long id){
-        User user = service.getUserById(id);
-        if(user==null){
+    public UserDTO getUser(@PathVariable Long id){
+        UserDTO userDTO = service.getUserById(id);
+        if(userDTO==null){
             throw new NoSuchUserException("There is no user with ID "+id+" in Database");
         }
-        return user;
+        return userDTO;
     }
-    @PostMapping("/admin")
-    public void addNewUser(@RequestBody User user) throws SaveObjectException {
-        service.registrationUser(user);
+    @PostMapping(value = "/admin", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void addNewUser(@RequestBody UserDTO userDTO) throws SaveObjectException {
+        service.registrationUser(userDTO);
     }
 
-    @PatchMapping("/admin")
-    public void updateUser(@RequestBody User user) throws SaveObjectException {
-        service.updateUser(user);
+    @PatchMapping(value = "/admin", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateUser(@RequestBody UserDTO userDTO) throws SaveObjectException {
+        service.updateUser(userDTO);
     }
     @DeleteMapping("/admin/{id}")
     public void deleteUser(@PathVariable Long id){
