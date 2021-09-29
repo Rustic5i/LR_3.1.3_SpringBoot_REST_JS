@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class RESTControllerAdmin {
-//master.2
+//master.3
     private IUserService service;
     @Autowired
     public RESTControllerAdmin(IUserService service) {
